@@ -1,1 +1,79 @@
-<p>dashboard works!</p>
+<h1 class="text-3xl font-bold mb-4">Task Manager</h1>
+
+<!-- Display User Information -->
+<div *ngIf="user" class="mb-4">
+    <h1>User</h1>
+    <h2 class="text-2xl font-semibold">Welcome, {{ user.name }}!</h2>
+    <p class="text-sm text-gray-600">Email: {{ user.email }}</p>
+    <!-- Add other user properties as needed -->
+</div>
+
+<!-- Form for creating a new task -->
+<form (ngSubmit)="createTask(newTask)" #taskForm="ngForm" class="mb-4">
+    <div class="flex space-x-2">
+        <input type="text" [(ngModel)]="newTask.title" name="title" placeholder="Task Title" required
+            class="border border-gray-300 rounded p-2 flex-1" />
+        <input type="text" [(ngModel)]="newTask.assignedTo.name" name="assignedTo" placeholder="Assigned To" required
+            class="border border-gray-300 rounded p-2 flex-1" />
+        <button type="submit" class="bg-blue-500 text-white rounded p-2 hover:bg-blue-600">Add Task</button>
+    </div>
+</form>
+
+<!-- Container for Two Columns -->
+<div class="grid grid-cols-2 gap-4">
+    <!-- Column for Tasks -->
+    <div>
+        <h2 class="text-2xl font-semibold mb-2">Tasks</h2>
+        <ul class="space-y-2">
+            <li *ngFor="let task of ongoingTasks"
+                class="flex justify-between items-center p-2 border border-gray-200 rounded">
+                <div>
+                    <span class="font-bold">{{ task.taskName }}</span>
+                    <p class="text-sm text-gray-600">Assigned to: {{ task.userFullName }}</p>
+                </div>
+                <div>
+                    <button (click)="editTask(task.id, { title: task.title, assignedTo: task.assignedTo })"
+                        class="bg-yellow-500 text-white rounded p-1 hover:bg-yellow-600">Edit</button>
+                    <button (click)="deleteTask(task.id)"
+                        class="bg-red-500 text-white rounded p-1 hover:bg-red-600 ml-2">Delete</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Column for Done Tasks -->
+    <div>
+        <h2 class="text-2xl font-semibold mb-2">Done Tasks</h2>
+        <ul class="space-y-2">
+            <li *ngFor="let task of completedTasks"
+                class="flex justify-between items-center p-2 border border-gray-200 rounded">
+                <div>
+                    <span class="font-bold">{{ task.taskName }}</span>
+                    <p class="text-sm text-gray-600">Assigned to: {{ task.userFullName}}</p>
+                </div>
+                <div>
+                    <button (click)="editTask(task.id, { title: task.title, assignedTo: task.assignedTo })"
+                        class="bg-yellow-500 text-white rounded p-1 hover:bg-yellow-600">Edit</button>
+                    <button (click)="deleteTask(task.id)"
+                        class="bg-red-500 text-white rounded p-1 hover:bg-red-600 ml-2">Delete</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Form for editing a task -->
+<div *ngIf="editingTask" class="mt-4">
+    <h2 class="text-2xl font-semibold mb-2">Edit Task</h2>
+    <form (ngSubmit)="editTask(editingTask.id, editingTask)" #editForm="ngForm">
+        <div class="flex space-x-2">
+            <input type="text" [(ngModel)]="editingTask.title" name="title" required
+                class="border border-gray-300 rounded p-2 flex-1" />
+            <input type="text" [(ngModel)]="editingTask.assignedTo.name" name="assignedTo" required
+                class="border border-gray-300 rounded p-2 flex-1" />
+            <button type="submit" class="bg-green-500 text-white rounded p-2 hover:bg-green-600">Update Task</button>
+            <button (click)="editingTask = null"
+                class="bg-gray-300 text-black rounded p-2 hover:bg-gray-400">Cancel</button>
+        </div>
+    </form>
+</div>
